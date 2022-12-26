@@ -2,10 +2,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AddressData {
+  String lang;
   String? contryCode;
   String? regionId;
   String? cityId;
-  AddressData({this.contryCode, this.regionId, this.cityId});
+  AddressData({this.contryCode, this.regionId, this.cityId, this.lang = 'ru'});
 }
 
 class AddressDataNotifier extends StateNotifier<AddressData> {

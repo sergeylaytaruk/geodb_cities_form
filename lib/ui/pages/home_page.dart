@@ -21,6 +21,7 @@ import 'package:geodb_cities/ui/widgets/regions_list.dart';
 import 'package:geodb_cities/ui/widgets/cities_list.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geodb_cities/data/providers/providers.dart';
+import 'package:geodb_cities/ui/widgets/info.dart';
 
 class HomePage extends ConsumerWidget {
   HomePage({Key? key, required this.title}) : super(key: key);
@@ -29,9 +30,6 @@ class HomePage extends ConsumerWidget {
   final countriesRepository = CountriesRepository();
   final regionsRepository = RegionsRepository();
   final citiesRepository = CitiesRepository();
-  Timer? timerSearchContries;
-  Timer? timerSearchRegions;
-  Timer? timerSearchCities;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,7 +41,7 @@ class HomePage extends ConsumerWidget {
       child: MultiBlocProvider(
         providers: [
           BlocProvider(create: (context) => ConnectionCubit()),
-          BlocProvider(create: (context) => CountriesCubit(countriesRepository)..fetchCountries(lang: 'ru', searchValue: '')),
+          BlocProvider(create: (context) => CountriesCubit(countriesRepository)..fetchCountries(lang: addressData.lang, searchValue: '')),
           BlocProvider(create: (context) => RegionsCubit(regionsRepository)),
           BlocProvider(create: (context) => CitiesCubit(citiesRepository)),
         ],
@@ -62,42 +60,13 @@ class HomePage extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                alignment: Alignment.topLeft,
-                padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: paddingV),
-                child: Text("Країна: ${addressData.contryCode.toString()}", style: TextStyle(color: Colors.black, fontSize: 22),),
-              ),
+              // Container(
+              //   alignment: Alignment.topLeft,
+              //   padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: paddingV),
+              //   child: Text("Країна: ${addressData.contryCode.toString()}", style: TextStyle(color: Colors.black, fontSize: 22),),
+              // ),
+              Info(),
               //ActionButtons(),
-              Expanded(
-                flex: 0,
-                child: Container(
-                  alignment: Alignment.topLeft,
-                  padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: paddingV),
-                  child: BlocBuilder<CountriesCubit, CountriesState>(
-                    builder: (context, state) {
-                      return TextField(
-                        decoration: InputDecoration(
-                          labelText: "Пошук країни",
-                          enabledBorder: myInputBorder(),
-                          focusedBorder: myInputBorder(),
-                        ),
-                        onChanged: (value) {
-                          timerSearchContries?.cancel();
-                          timerSearchContries = Timer(const Duration(milliseconds: 1000), () {
-                            final CountriesCubit countriesCubit = context.read<CountriesCubit>();
-                            countriesCubit.clearCountries();
-                            countriesCubit.fetchCountries(lang: 'ru', searchValue: value);
-                            final RegionsCubit regionsCubit = context.read<RegionsCubit>();
-                            regionsCubit.clearRegions();
-                            final CitiesCubit citiesCubit = context.read<CitiesCubit>();
-                            citiesCubit.clearCities();
-                          });
-                        },
-                      );
-                    }
-                  ),
-                ),
-              ),
               Expanded(
                 flex: 0,
                 child: Container(
@@ -106,35 +75,6 @@ class HomePage extends ConsumerWidget {
                   child: CountriesList(),
                 ),
               ),
-              addressData.contryCode != null ?
-              Expanded(
-                flex: 0,
-                child: Container(
-                  alignment: Alignment.topLeft,
-                  padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: paddingV),
-                  child: BlocBuilder<RegionsCubit, RegionsState>(
-                      builder: (context, state) {
-                        return TextField(
-                          decoration: InputDecoration(
-                            labelText: "Пошук області",
-                            enabledBorder: myInputBorder(),
-                            focusedBorder: myInputBorder(),
-                          ),
-                          onChanged: (value) {
-                            timerSearchRegions?.cancel();
-                            timerSearchRegions = Timer(const Duration(milliseconds: 1000), () {
-                              final RegionsCubit regionsCubit = context.read<RegionsCubit>();
-                              regionsCubit.clearRegions();
-                              regionsCubit.fetchRegions(lang: 'ru', searchValue: value, countryCode: addressData.contryCode.toString());
-                              final CitiesCubit citiesCubit = context.read<CitiesCubit>();
-                              citiesCubit.clearCities();
-                            });
-                          },
-                        );
-                      }
-                  ),
-                ),
-              ) : Expanded(child: Container(), flex: 0,),
               Expanded(
                 flex: 0,
                 child: Container(
@@ -143,33 +83,6 @@ class HomePage extends ConsumerWidget {
                   child: RegionsList()
                 ),
               ),
-              addressData.contryCode != null && addressData.regionId != null  ?
-              Expanded(
-                flex: 0,
-                child: Container(
-                  alignment: Alignment.topLeft,
-                  padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: paddingV),
-                  child: BlocBuilder<CitiesCubit, CitiesState>(
-                      builder: (context, state) {
-                        return TextField(
-                          decoration: InputDecoration(
-                            labelText: "Пошук міста",
-                            enabledBorder: myInputBorder(),
-                            focusedBorder: myInputBorder(),
-                          ),
-                          onChanged: (value) {
-                            timerSearchCities?.cancel();
-                            timerSearchCities = Timer(const Duration(milliseconds: 1000), () {
-                              final CitiesCubit citiesCubit = context.read<CitiesCubit>();
-                              citiesCubit.clearCities();
-                              citiesCubit.fetchCities(lang: 'ru', searchValue: value, countryCode: addressData.contryCode.toString(), regionCode: addressData.regionId.toString());
-                            });
-                          },
-                        );
-                      }
-                  ),
-                ),
-              ) : Expanded(child: Container(), flex: 0,),
               Expanded(
                 flex: 0,
                 child: Container(
@@ -181,16 +94,6 @@ class HomePage extends ConsumerWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  OutlineInputBorder myInputBorder() {
-    return OutlineInputBorder(
-      borderRadius: BorderRadius.all(Radius.circular(20)),
-      borderSide: BorderSide(
-        color:Colors.indigoAccent,
-        width: 1,
       ),
     );
   }

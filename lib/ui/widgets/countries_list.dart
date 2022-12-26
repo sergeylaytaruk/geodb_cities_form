@@ -1,22 +1,20 @@
-//import 'countries_cubit.dart';
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geodb_cities/cubit/countries_cubit.dart';
 import 'package:geodb_cities/cubit/countries_state.dart';
 import 'package:geodb_cities/cubit/regions_cubit.dart';
+import 'package:geodb_cities/cubit/cities_cubit.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geodb_cities/data/providers/providers.dart';
 import 'package:geodb_cities/data/models/countries.dart';
-
-//import 'package:geodb_cities/data/providers/address_data.dart';
-
-//final addressDataProvider = StateNotifierProvider<AddressDataNotifier, AddressData>((ref) => AddressDataNotifier(AddressData()));
+import 'package:geodb_cities/ui/widgets/input_border.dart';
 
 class CountriesList extends ConsumerWidget {
-  const CountriesList({Key? key}) : super(key: key);
+  CountriesList({Key? key}) : super(key: key);
+
+  Timer? timerSearchContries;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,21 +32,6 @@ class CountriesList extends ConsumerWidget {
             );
           }
           if (state is CountriesLoadedState) {
-            // return ListView.builder(
-            //   itemCount: state.loadedCountires.length,
-            //   itemBuilder: (context, index) => Container(
-            //     color: index % 2 == 0 ? Colors.white : Colors.blue[50],
-            //     child: ListTile(
-            //       //leading: Text("${state.loadedCountires[index].code}"),
-            //       title: Column(
-            //         children: <Widget>[
-            //           Text("${state.loadedCountires[index].name}"),
-            //           Text("${state.loadedCountires[index].code}"),
-            //         ],
-            //       ),
-            //     ),
-            //   ),
-            // );
             List<DropdownMenuItem<String>> listItems = [];
             state.loadedCountires.forEach((item) {
               listItems.add(
@@ -65,15 +48,43 @@ class CountriesList extends ConsumerWidget {
               );
             });
             return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
+                Expanded(
+                  flex: 0,
+                  child: BlocBuilder<CountriesCubit, CountriesState>(
+                      builder: (context, state) {
+                        return TextField(
+                          decoration: InputDecoration(
+                            labelText: "Пошук країни",
+                            enabledBorder: myInputBorder(),
+                            focusedBorder: myInputBorder(),
+                          ),
+                          onChanged: (value) {
+                            timerSearchContries?.cancel();
+                            timerSearchContries = Timer(const Duration(milliseconds: 1000), () {
+                              final CountriesCubit countriesCubit = context.read<CountriesCubit>();
+                              countriesCubit.clearCountries();
+                              countriesCubit.fetchCountries(lang: addressData.lang, searchValue: value);
+                              final RegionsCubit regionsCubit = context.read<RegionsCubit>();
+                              regionsCubit.clearRegions();
+                              final CitiesCubit citiesCubit = context.read<CitiesCubit>();
+                              citiesCubit.clearCities();
+                            });
+                          },
+                        );
+                      }
+                  ),
+                ),
                 FormBuilderDropdown(
                   name: 'id_country',
                   decoration: InputDecoration(
-                    labelText: 'Країна:',
+                    labelText: 'Оберіть країну:',
                   ),
                   initialValue: null,
                   allowClear: false,
-                  hint: Text("Оберіть країну"),
                   items: listItems,
                   onChanged: (String? value) {
                     if (value != null && value != '') {
@@ -81,7 +92,7 @@ class CountriesList extends ConsumerWidget {
                         final RegionsCubit regionsCubit = context.read<RegionsCubit>();
                         regionsCubit.clearRegions();
                         ref.read(addressDataProvider.notifier).updateContryCode(value);
-                        regionsCubit.fetchRegions(lang: 'ru', searchValue: '', countryCode: value);
+                        regionsCubit.fetchRegions(lang: addressData.lang, searchValue: '', countryCode: value);
                       });
                     }
                   },
