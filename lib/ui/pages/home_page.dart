@@ -60,11 +60,7 @@ class HomePage extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Container(
-              //   alignment: Alignment.topLeft,
-              //   padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: paddingV),
-              //   child: Text("Країна: ${addressData.contryCode.toString()}", style: TextStyle(color: Colors.black, fontSize: 22),),
-              // ),
+              SizedBox(height: 5,),
               Info(),
               //ActionButtons(),
               Expanded(

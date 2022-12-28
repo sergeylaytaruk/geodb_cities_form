@@ -15,6 +15,7 @@ class RegionsList extends ConsumerWidget {
   RegionsList({Key? key}) : super(key: key);
 
   Timer? timerSearchRegions;
+  final _formSelectFieldKey = GlobalKey<FormBuilderFieldState>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -57,32 +58,56 @@ class RegionsList extends ConsumerWidget {
                   flex: 0,
                   child: BlocBuilder<RegionsCubit, RegionsState>(
                       builder: (context, state) {
-                        return TextField(
+                        return TextFormField(
+                          autofocus: true,
+                          initialValue: '',
+                          style: TextStyle(
+                            fontWeight: FontWeight.normal,
+                            fontSize: 18,
+                          ),
                           decoration: InputDecoration(
                             labelText: "Пошук області",
+                            isDense: false,
                             enabledBorder: myInputBorder(),
                             focusedBorder: myInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 0),
                           ),
                           onChanged: (value) {
                             timerSearchRegions?.cancel();
                             timerSearchRegions = Timer(const Duration(milliseconds: 1000), () {
                               final RegionsCubit regionsCubit = context.read<RegionsCubit>();
-                              regionsCubit.clearRegions();
-                              regionsCubit.fetchRegions(lang: addressData.lang, searchValue: value, countryCode: addressData.contryCode.toString());
                               final CitiesCubit citiesCubit = context.read<CitiesCubit>();
+                              regionsCubit.clearRegions();
                               citiesCubit.clearCities();
+                              regionsCubit.fetchRegions(lang: addressData.lang, searchValue: value, countryCode: addressData.contryCode.toString());
                             });
                           },
+                          keyboardType: TextInputType.text,
+                          autocorrect: false,
                         );
                       }
                   ),
                 ) : Expanded(child: Container(), flex: 0,),
-                FormBuilderDropdown(
+                FormBuilderDropdown<String>(
+                  key: _formSelectFieldKey,
                   name: 'id_region',
                   decoration: InputDecoration(
-                    labelText: 'Оберіть область:',
+                    labelText: 'Область:',
+                    suffix: IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () {
+                        _formSelectFieldKey.currentState?.reset();
+                        final RegionsCubit regionsCubit = context.read<RegionsCubit>();
+                        final CitiesCubit citiesCubit = context.read<CitiesCubit>();
+                        regionsCubit.clearRegions();
+                        citiesCubit.clearCities();
+                        ref.read(addressDataProvider.notifier).updateRegionId(null);
+                        ref.read(addressDataProvider.notifier).updateCityId(null);
+                      },
+                    ),
+                    hintText: 'Оберіть область:',
                   ),
-                  initialValue: null,
+                  initialValue: addressData.regionId,
                   allowClear: false,
                   items: listItems,
                   onChanged: (String? value) {
@@ -91,7 +116,10 @@ class RegionsList extends ConsumerWidget {
                         final CitiesCubit citiesCubit = context.read<CitiesCubit>();
                         citiesCubit.clearCities();
                         ref.read(addressDataProvider.notifier).updateRegionId(value);
+                        ref.read(addressDataProvider.notifier).updateCityId(null);
                         citiesCubit.fetchCities(lang: addressData.lang, searchValue: '', countryCode: addressData.contryCode.toString(), regionCode: value);
+                        //final RegionsCubit regionsCubit = context.read<RegionsCubit>();
+                        //regionsCubit.selectedRegions();
                       });
                     }
                   },

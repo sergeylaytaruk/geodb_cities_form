@@ -13,6 +13,7 @@ class CitiesList extends ConsumerWidget {
   CitiesList({Key? key}) : super(key: key);
 
   Timer? timerSearchCities;
+  final _formSelectFieldKey = GlobalKey<FormBuilderFieldState>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -55,11 +56,19 @@ class CitiesList extends ConsumerWidget {
                   flex: 0,
                   child: BlocBuilder<CitiesCubit, CitiesState>(
                       builder: (context, state) {
-                        return TextField(
+                        return TextFormField(
+                          autofocus: true,
+                          initialValue: '',
+                          style: TextStyle(
+                            fontWeight: FontWeight.normal,
+                            fontSize: 18,
+                          ),
                           decoration: InputDecoration(
                             labelText: "Пошук міста",
+                            isDense: false,
                             enabledBorder: myInputBorder(),
                             focusedBorder: myInputBorder(),
+                            contentPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 0),
                           ),
                           onChanged: (value) {
                             timerSearchCities?.cancel();
@@ -69,16 +78,29 @@ class CitiesList extends ConsumerWidget {
                               citiesCubit.fetchCities(lang: addressData.lang, searchValue: value, countryCode: addressData.contryCode.toString(), regionCode: addressData.regionId.toString());
                             });
                           },
+                          keyboardType: TextInputType.text,
+                          autocorrect: false,
                         );
                       }
                   ),
                 ) : Expanded(child: Container(), flex: 0,),
-                FormBuilderDropdown(
+                FormBuilderDropdown<String>(
+                  key: _formSelectFieldKey,
                   name: 'id_city',
                   decoration: InputDecoration(
-                    labelText: 'Оберіть місто:',
+                    labelText: 'Місто:',
+                    suffix: IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () {
+                        _formSelectFieldKey.currentState?.reset();
+                        final CitiesCubit citiesCubit = context.read<CitiesCubit>();
+                        citiesCubit.clearCities();
+                        ref.read(addressDataProvider.notifier).updateCityId(null);
+                      },
+                    ),
+                    hintText: 'Оберіть місто:',
                   ),
-                  initialValue: null,
+                  initialValue: addressData.cityId,
                   allowClear: false,
                   items: listItems,
                   onChanged: (String? value) {
@@ -96,7 +118,6 @@ class CitiesList extends ConsumerWidget {
               child: Text("Error loading cities"),
             );
           }
-          //return SizedBox(height: 3,);
           return SizedBox.shrink();
         }
     );
