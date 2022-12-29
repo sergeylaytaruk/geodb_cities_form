@@ -17,10 +17,13 @@ class _InfoState extends ConsumerState<Info> {
   @override
   Widget build(BuildContext context) {
     final addressData = ref.watch(addressDataProvider);
+    String country = addressData.contryCode ?? '';
+    String region = addressData.regionId ?? '';
+    String city = addressData.cityId ?? '';
     return Container(
       alignment: Alignment.topLeft,
       padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: paddingV),
-      child: Text("Країна: ${addressData.contryCode.toString()} Область: ${addressData.regionId.toString()} Місто: ${addressData.cityId.toString()} ", style: TextStyle(color: Colors.black, fontSize: 22),),
+      child: Text("Країна: ${country} Область: ${region} Місто: ${city} ", style: TextStyle(color: Colors.black, fontSize: 22),),
     );
   }
 }
