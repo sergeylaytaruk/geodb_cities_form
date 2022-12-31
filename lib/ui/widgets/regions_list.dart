@@ -68,8 +68,8 @@ class RegionsList extends ConsumerWidget {
                           decoration: InputDecoration(
                             labelText: "Пошук області",
                             isDense: false,
-                            enabledBorder: myInputBorder(),
-                            focusedBorder: myInputBorder(),
+                            enabledBorder: inputDecoration(),
+                            focusedBorder: inputDecoration(),
                             contentPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 0),
                           ),
                           onChanged: (value) {
@@ -88,18 +88,22 @@ class RegionsList extends ConsumerWidget {
                       }
                   ),
                 ) : Expanded(child: Container(), flex: 0,),
+                SizedBox(height: 16,),
                 FormBuilderDropdown<String>(
                   key: _formSelectFieldKey,
                   name: 'id_region',
                   decoration: InputDecoration(
                     labelText: 'Область:',
+                    isDense: false,
+                    enabledBorder: selectDecoration(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                     suffix: IconButton(
                       icon: const Icon(Icons.close),
                       onPressed: () {
                         _formSelectFieldKey.currentState?.reset();
-                        final RegionsCubit regionsCubit = context.read<RegionsCubit>();
+                        //final RegionsCubit regionsCubit = context.read<RegionsCubit>();
                         final CitiesCubit citiesCubit = context.read<CitiesCubit>();
-                        regionsCubit.clearRegions();
+                        //regionsCubit.clearRegions();
                         citiesCubit.clearCities();
                         ref.read(addressDataProvider.notifier).updateRegionId(null);
                         ref.read(addressDataProvider.notifier).updateCityId(null);
@@ -118,8 +122,6 @@ class RegionsList extends ConsumerWidget {
                         ref.read(addressDataProvider.notifier).updateRegionId(value);
                         ref.read(addressDataProvider.notifier).updateCityId(null);
                         citiesCubit.fetchCities(lang: addressData.lang, searchValue: '', countryCode: addressData.contryCode.toString(), regionCode: value);
-                        //final RegionsCubit regionsCubit = context.read<RegionsCubit>();
-                        //regionsCubit.selectedRegions();
                       });
                     }
                   },

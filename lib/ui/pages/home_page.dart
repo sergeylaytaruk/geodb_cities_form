@@ -62,6 +62,7 @@ class HomePage extends ConsumerWidget {
             children: [
               SizedBox(height: 5,),
               Info(),
+              SizedBox(height: 16,),
               //ActionButtons(),
               Expanded(
                 flex: 0,
@@ -71,6 +72,7 @@ class HomePage extends ConsumerWidget {
                   child: CountriesList(),
                 ),
               ),
+              SizedBox(height: 16,),
               Expanded(
                 flex: 0,
                 child: Container(
@@ -79,6 +81,7 @@ class HomePage extends ConsumerWidget {
                   child: RegionsList()
                 ),
               ),
+              SizedBox(height: 16,),
               Expanded(
                 flex: 0,
                 child: Container(
@@ -87,6 +90,7 @@ class HomePage extends ConsumerWidget {
                   child: CitiesList()
                 ),
               ),
+              SizedBox(height: 16,),
             ],
           ),
         ),

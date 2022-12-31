@@ -66,8 +66,8 @@ class CitiesList extends ConsumerWidget {
                           decoration: InputDecoration(
                             labelText: "Пошук міста",
                             isDense: false,
-                            enabledBorder: myInputBorder(),
-                            focusedBorder: myInputBorder(),
+                            enabledBorder: inputDecoration(),
+                            focusedBorder: inputDecoration(),
                             contentPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 0),
                           ),
                           onChanged: (value) {
@@ -84,17 +84,19 @@ class CitiesList extends ConsumerWidget {
                       }
                   ),
                 ) : Expanded(child: Container(), flex: 0,),
+                SizedBox(height: 16,),
                 FormBuilderDropdown<String>(
                   key: _formSelectFieldKey,
                   name: 'id_city',
                   decoration: InputDecoration(
                     labelText: 'Місто:',
+                    isDense: false,
+                    enabledBorder: selectDecoration(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                     suffix: IconButton(
                       icon: const Icon(Icons.close),
                       onPressed: () {
                         _formSelectFieldKey.currentState?.reset();
-                        final CitiesCubit citiesCubit = context.read<CitiesCubit>();
-                        citiesCubit.clearCities();
                         ref.read(addressDataProvider.notifier).updateCityId(null);
                       },
                     ),

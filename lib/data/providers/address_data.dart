@@ -4,22 +4,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 @immutable
 class AddressData {
-  final String lang;
-  final String? contryCode;
-  final String? regionId;
-  final String? cityId;
-
+  late String lang;
+  String? contryCode;
+  String? regionId;
+  String? cityId;
 
 //<editor-fold desc="Data Methods">
-
-
-  const AddressData({
+  AddressData({
     required this.lang,
     this.contryCode,
     this.regionId,
     this.cityId,
   });
-
 
   @override
   bool operator ==(Object other) =>
@@ -104,4 +100,17 @@ class AddressDataNotifier extends StateNotifier<AddressData> {
   void updateCityId(String? cityId) {
     state = state.copyWith(cityId: cityId);
   }
+
+/*
+  void updateContryCode(String? contryCode) {
+    state.contryCode = contryCode;
+  }
+
+  void updateRegionId(String? regionId) {
+    state.regionId = regionId;
+  }
+
+  void updateCityId(String? cityId) {
+    state.cityId = cityId;
+  }*/
 }

@@ -67,8 +67,8 @@ class CountriesList extends ConsumerWidget {
                           decoration: InputDecoration(
                             labelText: "Пошук країни",
                             isDense: false,
-                            enabledBorder: myInputBorder(),
-                            focusedBorder: myInputBorder(),
+                            enabledBorder: inputDecoration(),
+                            focusedBorder: inputDecoration(),
                             contentPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 0),
                           ),
                           onChanged: (value) {
@@ -89,11 +89,15 @@ class CountriesList extends ConsumerWidget {
                       }
                   ),
                 ),
+                SizedBox(height: 16,),
                 FormBuilderDropdown<String>(
                   key: _formSelectFieldKey,
                   name: 'id_country',
                   decoration: InputDecoration(
                     labelText: 'Країна:',
+                    isDense: false,
+                    enabledBorder: selectDecoration(),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                     suffix: IconButton(
                       icon: const Icon(Icons.close),
                       onPressed: () {
@@ -123,8 +127,6 @@ class CountriesList extends ConsumerWidget {
                         ref.read(addressDataProvider.notifier).updateRegionId(null);
                         ref.read(addressDataProvider.notifier).updateCityId(null);
                         regionsCubit.fetchRegions(lang: addressData.lang, searchValue: '', countryCode: value);
-                        //final CountriesCubit countriesCubit = context.read<CountriesCubit>();
-                        //countriesCubit.selectedCountries();
                       });
                     }
                   },

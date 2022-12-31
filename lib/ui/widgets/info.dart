@@ -13,13 +13,18 @@ class _InfoState extends ConsumerState<Info> {
 
   final double paddingH = 10.0;
   final double paddingV = 5.0;
+  String country = '';
+  String region = '';
+  String city = '';
 
   @override
   Widget build(BuildContext context) {
-    final addressData = ref.watch(addressDataProvider);
-    String country = addressData.contryCode ?? '';
-    String region = addressData.regionId ?? '';
-    String city = addressData.cityId ?? '';
+    ref.listen(addressDataProvider, (previousState, currentState) {
+      country = currentState.contryCode ?? '';
+      region = currentState.regionId ?? '';
+      city = currentState.cityId ?? '';
+      setState() {};
+    });
     return Container(
       alignment: Alignment.topLeft,
       padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: paddingV),
