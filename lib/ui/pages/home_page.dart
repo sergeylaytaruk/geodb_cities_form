@@ -55,43 +55,46 @@ class HomePage extends ConsumerWidget {
             centerTitle: true,
           ),
           backgroundColor: Colors.white,
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(height: 5,),
-              Info(),
-              SizedBox(height: 16,),
-              //ActionButtons(),
-              Expanded(
-                flex: 0,
-                child: Container(
-                  alignment: Alignment.topLeft,
-                  padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: paddingV),
-                  child: CountriesList(),
+          body: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: 5,),
+                Info(),
+                SizedBox(height: 16,),
+                //ActionButtons(),
+                Expanded(
+                  flex: 0,
+                  child: Container(
+                    alignment: Alignment.topLeft,
+                    padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: paddingV),
+                    child: CountriesList(),
+                  ),
                 ),
-              ),
-              SizedBox(height: 16,),
-              Expanded(
-                flex: 0,
-                child: Container(
-                  alignment: Alignment.topLeft,
-                  padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: paddingV),
-                  child: RegionsList()
+                SizedBox(height: 16,),
+                Expanded(
+                  flex: 0,
+                  child: Container(
+                    alignment: Alignment.topLeft,
+                    padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: paddingV),
+                    child: RegionsList()
+                  ),
                 ),
-              ),
-              SizedBox(height: 16,),
-              Expanded(
-                flex: 0,
-                child: Container(
-                  alignment: Alignment.topLeft,
-                  padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: paddingV),
-                  child: CitiesList()
+                SizedBox(height: 16,),
+                Expanded(
+                  flex: 0,
+                  child: Container(
+                    alignment: Alignment.topLeft,
+                    padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: paddingV),
+                    child: CitiesList()
+                  ),
                 ),
-              ),
-              SizedBox(height: 16,),
-            ],
+                SizedBox(height: 16,),
+              ],
+            ),
           ),
         ),
       ),

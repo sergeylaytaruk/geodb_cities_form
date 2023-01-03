@@ -106,9 +106,9 @@ class CountriesList extends ConsumerWidget {
                         final CitiesCubit citiesCubit = context.read<CitiesCubit>();
                         regionsCubit.clearRegions();
                         citiesCubit.clearCities();
-                        ref.read(addressDataProvider.notifier).updateContryCode(null);
-                        ref.read(addressDataProvider.notifier).updateRegionId(null);
-                        ref.read(addressDataProvider.notifier).updateCityId(null);
+                        ref.read(addressDataProvider.notifier).updateContryCode('');
+                        ref.read(addressDataProvider.notifier).updateRegionId('');
+                        ref.read(addressDataProvider.notifier).updateCityId('');
                       },
                     ),
                     hintText: 'Оберіть країну:',
@@ -118,14 +118,16 @@ class CountriesList extends ConsumerWidget {
                   items: listItems,
                   onChanged: (String? value) {
                     if (value != null && value != '') {
+                      Countries country = getSelectedCountry(state, value);
+                      ref.read(addressDataProvider.notifier).updateCountry(country);
                       Timer(const Duration(milliseconds: 1000), () {
                         final RegionsCubit regionsCubit = context.read<RegionsCubit>();
                         final CitiesCubit citiesCubit = context.read<CitiesCubit>();
                         regionsCubit.clearRegions();
                         citiesCubit.clearCities();
                         ref.read(addressDataProvider.notifier).updateContryCode(value);
-                        ref.read(addressDataProvider.notifier).updateRegionId(null);
-                        ref.read(addressDataProvider.notifier).updateCityId(null);
+                        ref.read(addressDataProvider.notifier).updateRegionId('');
+                        ref.read(addressDataProvider.notifier).updateCityId('');
                         regionsCubit.fetchRegions(lang: addressData.lang, searchValue: '', countryCode: value);
                       });
                     }
@@ -143,5 +145,13 @@ class CountriesList extends ConsumerWidget {
           return SizedBox.shrink();
         }
     );
+  }
+
+  Countries getSelectedCountry(state, String countryCode) {
+    final Countries country = state.loadedCountires.singleWhere((element) =>
+    element.code == countryCode, orElse: () {
+      return Countries(name: '', code: '');
+    });
+    return country;
   }
 }

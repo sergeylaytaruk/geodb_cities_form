@@ -20,9 +20,9 @@ class _InfoState extends ConsumerState<Info> {
   @override
   Widget build(BuildContext context) {
     ref.listen(addressDataProvider, (previousState, currentState) {
-      country = currentState.contryCode ?? '';
-      region = currentState.regionId ?? '';
-      city = currentState.cityId ?? '';
+      country = currentState.country.name ?? '';
+      region = currentState.region.name ?? '';
+      city = currentState.city.name ?? '';
       setState() {};
     });
     return Container(

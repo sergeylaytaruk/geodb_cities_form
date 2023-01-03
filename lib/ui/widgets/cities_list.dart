@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geodb_cities/data/providers/providers.dart';
 import 'package:geodb_cities/data/models/cities.dart';
 import 'package:geodb_cities/ui/widgets/input_border.dart';
+import 'package:geodb_cities/data/models/cities.dart';
 
 class CitiesList extends ConsumerWidget {
   CitiesList({Key? key}) : super(key: key);
@@ -97,7 +98,7 @@ class CitiesList extends ConsumerWidget {
                       icon: const Icon(Icons.close),
                       onPressed: () {
                         _formSelectFieldKey.currentState?.reset();
-                        ref.read(addressDataProvider.notifier).updateCityId(null);
+                        ref.read(addressDataProvider.notifier).updateCityId('');
                       },
                     ),
                     hintText: 'Оберіть місто:',
@@ -107,6 +108,8 @@ class CitiesList extends ConsumerWidget {
                   items: listItems,
                   onChanged: (String? value) {
                     if (value != null && value != '') {
+                      Cities city = getSelectedCity(state, value);
+                      ref.read(addressDataProvider.notifier).updateCity(city);
                       ref.read(addressDataProvider.notifier).updateCityId(value);
                     }
                   },
@@ -123,5 +126,13 @@ class CitiesList extends ConsumerWidget {
           return SizedBox.shrink();
         }
     );
+  }
+
+  Cities getSelectedCity(state, String cityId) {
+    final Cities city = state.loadedCities.singleWhere((element) =>
+    element.id == cityId, orElse: () {
+      return Cities(id: '', name: '');
+    });
+    return city;
   }
 }
