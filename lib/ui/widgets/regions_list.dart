@@ -18,6 +18,8 @@ class RegionsList extends ConsumerWidget {
   Timer? timerSearchRegions;
   final _formSelectFieldKey = GlobalKey<FormBuilderFieldState>();
 
+  FocusNode focusRegion  = FocusNode();
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final addressData = ref.watch(addressDataProvider);
@@ -34,6 +36,7 @@ class RegionsList extends ConsumerWidget {
             );
           }
           if (state is RegionsLoadedState) {
+            focusRegion.requestFocus();
             List<DropdownMenuItem<String>> listItems = [];
             state.loadedRegions.forEach((item) {
               listItems.add(
@@ -60,7 +63,7 @@ class RegionsList extends ConsumerWidget {
                   child: BlocBuilder<RegionsCubit, RegionsState>(
                       builder: (context, state) {
                         return TextFormField(
-                          autofocus: true,
+                          focusNode: focusRegion,
                           initialValue: '',
                           style: TextStyle(
                             fontWeight: FontWeight.normal,

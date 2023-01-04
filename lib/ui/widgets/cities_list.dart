@@ -15,6 +15,7 @@ class CitiesList extends ConsumerWidget {
 
   Timer? timerSearchCities;
   final _formSelectFieldKey = GlobalKey<FormBuilderFieldState>();
+  FocusNode focusCity = FocusNode();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -32,6 +33,7 @@ class CitiesList extends ConsumerWidget {
             );
           }
           if (state is CitiesLoadedState) {
+            focusCity.requestFocus();
             List<DropdownMenuItem<String>> listItems = [];
             state.loadedCities.forEach((item) {
               listItems.add(
@@ -58,7 +60,7 @@ class CitiesList extends ConsumerWidget {
                   child: BlocBuilder<CitiesCubit, CitiesState>(
                       builder: (context, state) {
                         return TextFormField(
-                          autofocus: true,
+                          focusNode: focusCity,
                           initialValue: '',
                           style: TextStyle(
                             fontWeight: FontWeight.normal,
@@ -111,6 +113,7 @@ class CitiesList extends ConsumerWidget {
                       Cities city = getSelectedCity(state, value);
                       ref.read(addressDataProvider.notifier).updateCity(city);
                       ref.read(addressDataProvider.notifier).updateCityId(value);
+                      focusCity.unfocus();
                     }
                   },
                   menuMaxHeight: 300,

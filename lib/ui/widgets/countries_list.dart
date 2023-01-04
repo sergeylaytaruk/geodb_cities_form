@@ -16,6 +16,7 @@ class CountriesList extends ConsumerWidget {
 
   Timer? timerSearchContries;
   final _formSelectFieldKey = GlobalKey<FormBuilderFieldState>();
+  FocusNode focusCountry = FocusNode();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,6 +34,7 @@ class CountriesList extends ConsumerWidget {
             );
           }
           if (state is CountriesLoadedState) {
+            focusCountry.requestFocus();
             List<DropdownMenuItem<String>> listItems = [];
             state.loadedCountires.forEach((item) {
               listItems.add(
@@ -58,7 +60,7 @@ class CountriesList extends ConsumerWidget {
                   child: BlocBuilder<CountriesCubit, CountriesState>(
                       builder: (context, state) {
                         return TextFormField(
-                          autofocus: true,
+                          focusNode: focusCountry,
                           initialValue: '',
                           style: TextStyle(
                             fontWeight: FontWeight.normal,

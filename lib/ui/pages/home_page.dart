@@ -80,7 +80,7 @@ class HomePage extends ConsumerWidget {
                   child: Container(
                     alignment: Alignment.topLeft,
                     padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: paddingV),
-                    child: RegionsList()
+                    child: RegionsList(),
                   ),
                 ),
                 SizedBox(height: 16,),
@@ -89,7 +89,7 @@ class HomePage extends ConsumerWidget {
                   child: Container(
                     alignment: Alignment.topLeft,
                     padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: paddingV),
-                    child: CitiesList()
+                    child: CitiesList(),
                   ),
                 ),
                 SizedBox(height: 16,),
