@@ -113,7 +113,9 @@ class CitiesList extends ConsumerWidget {
                       Cities city = getSelectedCity(state, value);
                       ref.read(addressDataProvider.notifier).updateCity(city);
                       ref.read(addressDataProvider.notifier).updateCityId(value);
-                      focusCity.unfocus();
+                      Timer(const Duration(milliseconds: 100), () {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                      });
                     }
                   },
                   menuMaxHeight: 300,
